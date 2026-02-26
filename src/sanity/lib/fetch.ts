@@ -11,7 +11,10 @@ export async function fetchSanity<T>(
   params?: Record<string, unknown>
 ): Promise<T | null> {
   try {
-    const result = await client.fetch<T>(query, params || {});
+    const result = await client.fetch<T>(query, params || {}, {
+      // Disable Next.js caching to ensure fresh data on each request
+      cache: 'no-store',
+    });
     return result;
   } catch (error) {
     console.error("Sanity fetch error:", error);
@@ -35,7 +38,10 @@ export async function fetchSanityArray<T>(
   params?: Record<string, unknown>
 ): Promise<T[]> {
   try {
-    const result = await client.fetch<T[]>(query, params || {});
+    const result = await client.fetch<T[]>(query, params || {}, {
+      // Disable Next.js caching to ensure fresh data on each request
+      cache: 'no-store',
+    });
     return result || [];
   } catch (error) {
     console.error("Sanity fetch array error:", error);

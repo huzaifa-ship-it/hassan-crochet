@@ -76,7 +76,6 @@ async function ProductsContent({ searchParams }: { searchParams: { category?: st
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-background">
         {/* Page Header */}
         <div className="border-b border-border/40 bg-muted/30">
@@ -129,9 +128,8 @@ async function ProductsContent({ searchParams }: { searchParams: { category?: st
                   <li>
                     <Link
                       href="/products"
-                      className={`text-sm hover:text-primary transition-colors block py-1 ${
-                        !category && !collection ? "text-primary font-medium" : "text-muted-foreground"
-                      }`}
+                      className={`text-sm hover:text-primary transition-colors block py-1 ${!category && !collection ? "text-primary font-medium" : "text-muted-foreground"
+                        }`}
                     >
                       All Products
                     </Link>
@@ -140,9 +138,8 @@ async function ProductsContent({ searchParams }: { searchParams: { category?: st
                     <li key={cat._id}>
                       <Link
                         href={`/products?category=${cat.slug.current}`}
-                        className={`text-sm hover:text-primary transition-colors block py-1 ${
-                          category === cat.slug.current ? "text-primary font-medium" : "text-muted-foreground"
-                        }`}
+                        className={`text-sm hover:text-primary transition-colors block py-1 ${category === cat.slug.current ? "text-primary font-medium" : "text-muted-foreground"
+                          }`}
                       >
                         {cat.title}
                       </Link>
@@ -162,9 +159,8 @@ async function ProductsContent({ searchParams }: { searchParams: { category?: st
                       <li key={col._id}>
                         <Link
                           href={`/products?collection=${col.slug.current}`}
-                          className={`text-sm hover:text-primary transition-colors block py-1 ${
-                            collection === col.slug.current ? "text-primary font-medium" : "text-muted-foreground"
-                          }`}
+                          className={`text-sm hover:text-primary transition-colors block py-1 ${collection === col.slug.current ? "text-primary font-medium" : "text-muted-foreground"
+                            }`}
                         >
                           {col.title}
                           {col.badge && (
@@ -277,7 +273,6 @@ async function ProductsContent({ searchParams }: { searchParams: { category?: st
           </div>
         </div>
       </main>
-      <Footer />
     </>
   )
 }

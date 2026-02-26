@@ -30,17 +30,6 @@ export default defineType({
             type: "reference",
             to: [{ type: "category" }]
         }),
-        defineField({
-            name: "collections",
-            title: "Collections",
-            type: "array",
-            of: [
-                {
-                    type: "reference",
-                    to: [{ type: "collection" }]
-                }
-            ]
-        }),
 
         // Description
         defineField({
@@ -80,12 +69,6 @@ export default defineType({
                             validation: (Rule) => Rule.required()
                         },
                         {
-                            name: "colorValue",
-                            title: "Color Value",
-                            type: "string",
-                            description: "Hex code (e.g., #D2C4B5) or Tailwind class (e.g., bg-black)"
-                        },
-                        {
                             name: "image",
                             title: "Product Image",
                             type: "image",
@@ -101,20 +84,6 @@ export default defineType({
                     ]
                 }
             ]
-        }),
-
-        // Product Images Gallery
-        defineField({
-            name: "galleryImages",
-            title: "Gallery Images",
-            type: "array",
-            of: [
-                {
-                    type: "image",
-                    options: { hotspot: true }
-                }
-            ],
-            description: "Additional product images for the gallery"
         }),
 
         // Badges (Studio Edition, Aesthetics etc.)
@@ -159,27 +128,6 @@ export default defineType({
             type: "boolean",
             initialValue: false,
             description: "Mark as new arrival"
-        }),
-
-        // Sort Order
-        defineField({
-            name: "sortOrder",
-            title: "Sort Order",
-            type: "number",
-            initialValue: 0,
-            description: "Lower numbers appear first in listings"
-        }),
-
-        // Seo
-        defineField({
-            name: "seoTitle",
-            title: "SEO Title",
-            type: "string"
-        }),
-        defineField({
-            name: "seoDescription",
-            title: "SEO Description",
-            type: "text"
         }),
 
         // Optional: Sale Countdown Support

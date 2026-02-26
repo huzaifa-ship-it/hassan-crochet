@@ -25,7 +25,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
 
   return (
     <>
-      <Header />
       <main className="min-h-screen bg-background">
         {/* Header */}
         <div className="border-b border-border/40 bg-muted/30">
@@ -80,7 +79,6 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
           )}
         </div>
       </main>
-      <Footer />
     </>
   )
 }

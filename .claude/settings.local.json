@@ -15,7 +15,8 @@
       "Bash(bunx:*)",
       "Bash(npm run build:*)",
       "Bash(bun run dev:*)",
-      "Bash(bun add:*)"
+      "Bash(bun add:*)",
+      "mcp__shadcn__view_items_in_registries"
     ]
   },
   "enableAllProjectMcpServers": true,
