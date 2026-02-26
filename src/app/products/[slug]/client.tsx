@@ -169,7 +169,7 @@ export default function ProductClient({ product }: ProductClientProps) {
 
   return (
     <div
-      className={`min-h-screen bg-gradient-to-b from-background to-muted/10 ${pacifico.className} ${delius.className} ${meowScript.className} ${borel.className} ${mysteryQuest.className} ${pinyonScript.className}`}
+      className={`min-h-screen bg-gradient-to-b from-background to-muted/10 `}
       style={{ overflowX: "hidden", width: "100%", boxSizing: "border-box" }}
     >
       <div className="mx-auto px-4 py-8 md:py-12 w-full overflow-x-hidden" style={{ maxWidth: "1280px" }}>
@@ -357,11 +357,10 @@ export default function ProductClient({ product }: ProductClientProps) {
                           <button
                             onClick={() => setSelectedColor(color)}
                             aria-label={color.name}
-                            className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 border-2 ${
-                              selectedColor?.name === color.name
-                                ? "scale-105 shadow-xl ring-2 ring-primary ring-offset-2 border-primary"
-                                : "border-transparent hover:scale-102 hover:shadow-lg opacity-90 hover:opacity-100"
-                            }`}
+                            className={`relative aspect-square rounded-xl overflow-hidden transition-all duration-300 border-2 ${selectedColor?.name === color.name
+                              ? "scale-105 shadow-xl ring-2 ring-primary ring-offset-2 border-primary"
+                              : "border-transparent hover:scale-102 hover:shadow-lg opacity-90 hover:opacity-100"
+                              }`}
                           >
                             {color.imageUrl ? (
                               <img
@@ -445,11 +444,10 @@ export default function ProductClient({ product }: ProductClientProps) {
                                   <button
                                     onClick={() => setTextColor(color.value)}
                                     aria-label={color.name}
-                                    className={`relative aspect-square rounded-lg overflow-hidden transition-all duration-200 border-2 ${
-                                      textColor === color.value
-                                        ? "scale-105 shadow-lg ring-2 ring-primary border-primary"
-                                        : "border-border hover:scale-105 opacity-70 hover:opacity-100 shadow-sm"
-                                    }`}
+                                    className={`relative aspect-square rounded-lg overflow-hidden transition-all duration-200 border-2 ${textColor === color.value
+                                      ? "scale-105 shadow-lg ring-2 ring-primary border-primary"
+                                      : "border-border hover:scale-105 opacity-70 hover:opacity-100 shadow-sm"
+                                      }`}
                                   >
                                     <div
                                       className="w-full h-full"
