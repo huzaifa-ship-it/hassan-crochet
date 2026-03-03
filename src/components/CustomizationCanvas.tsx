@@ -49,7 +49,7 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
             const canvas = new fabric.Canvas(canvasRef.current, {
                 width,
                 height,
-                backgroundColor: "#f3f4f6",
+                backgroundColor: null,
                 preserveObjectStacking: true, // Keep selected objects at their respective stack position
                 selection: true,
                 // Selection box styling - professional dark blue
@@ -287,6 +287,37 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
                         originY: "center"
                     });
                     img.scaleToWidth(80); // Default icon size
+
+                    // Process image to remove white background
+                    const element = img.getElement();
+                    if (element) {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        if (ctx) {
+                            canvas.width = element.naturalWidth;
+                            canvas.height = element.naturalHeight;
+                            ctx.drawImage(element, 0, 0);
+
+                            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            const data = imageData.data;
+
+                            for (let i = 0; i < data.length; i += 4) {
+                                // Check if pixel is white or near-white
+                                const r = data[i];
+                                const g = data[i + 1];
+                                const b = data[i + 2];
+
+                                // If pixel is white or very light, make it transparent
+                                if (r > 230 && g > 230 && b > 230) {
+                                    data[i + 3] = 0; // Set alpha to 0 (transparent)
+                                }
+                            }
+
+                            ctx.putImageData(imageData, 0, 0);
+                            img.setElement(canvas as any);
+                        }
+                    }
+
                     fabricCanvas.add(img);
                     fabricCanvas.setActiveObject(img);
                     fabricCanvas.requestRenderAll();
@@ -400,6 +431,8 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
                 if (!fabricCanvas) return;
                 try {
                     const img = await fabric.FabricImage.fromURL(url, { crossOrigin: "anonymous" });
+
+                    // Remove white background from icon
                     img.set({
                         left: fabricCanvas.width! / 2,
                         top: fabricCanvas.height! / 2,
@@ -407,6 +440,37 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
                         originY: "center",
                     });
                     img.scaleToWidth(80);
+
+                    // Process image to remove white background
+                    const element = img.getElement();
+                    if (element) {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        if (ctx) {
+                            canvas.width = element.naturalWidth;
+                            canvas.height = element.naturalHeight;
+                            ctx.drawImage(element, 0, 0);
+
+                            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            const data = imageData.data;
+
+                            for (let i = 0; i < data.length; i += 4) {
+                                // Check if pixel is white or near-white
+                                const r = data[i];
+                                const g = data[i + 1];
+                                const b = data[i + 2];
+
+                                // If pixel is white or very light, make it transparent
+                                if (r > 230 && g > 230 && b > 230) {
+                                    data[i + 3] = 0; // Set alpha to 0 (transparent)
+                                }
+                            }
+
+                            ctx.putImageData(imageData, 0, 0);
+                            img.setElement(canvas as any);
+                        }
+                    }
+
                     fabricCanvas.add(img);
                     fabricCanvas.setActiveObject(img);
                     fabricCanvas.requestRenderAll();

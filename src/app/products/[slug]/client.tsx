@@ -39,6 +39,19 @@ const ICONS = [
   { name: "White Flower", url: "/icons/White Flower-half.png" },
   { name: "Yellow Combo", url: "/icons/Yellow Combo.png" },
   { name: "Yellow Flower", url: "/icons/Yellow Flower-half.png" },
+  { name: "Blue Icon 1", url: "/icons/image-swatches-2_1_1742280999062-1748241688.avif" },
+  { name: "Pink Icon", url: "/icons/image-swatches-2_15_1742281294612-1748241738.avif" },
+  { name: "Light Blue Icon", url: "/icons/image-swatches-2_2_1742281000795-1748241695.avif" },
+  { name: "Gray Icon", url: "/icons/image-swatches-2_20_1748241835490-1748241838.avif" },
+  { name: "Green Icon", url: "/icons/image-swatches-2_3_1713509294243-1748241701.webp" },
+  { name: "Orange Icon", url: "/icons/image-swatches-2_3_1713509300624-1713509328.webp" },
+  { name: "Red Icon", url: "/icons/image-swatches-2_4_1742281000196-1748241704.webp" },
+  { name: "Purple Icon", url: "/icons/image-swatches-2_5_1714127302243-1748241706.avif" },
+  { name: "Pink Icon 2", url: "/icons/image-swatches-2_6_1742281001781-1748241710.avif" },
+  { name: "Multi Icon", url: "/icons/image-swatches-2_8_1742281002277-1748241715.avif" },
+  { name: "Dark Icon", url: "/icons/image-swatches-2_9_1742281002744-1748241718.webp" },
+  { name: "Swatch 1", url: "/icons/swatch-17645549500664.webp" },
+  { name: "Swatch 2", url: "/icons/swatch-17645549949216.avif" },
 ]
 
 // Single color options
@@ -605,7 +618,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="pt-4 pb-6 space-y-4">
-                      <div className="grid grid-cols-6 gap-3 max-h-[200px] overflow-y-auto pr-2 scrollbar-hide">
+                      <div className="grid grid-cols-6 gap-3 max-h-[280px] overflow-y-auto pr-2 scrollbar-hide">
                         {ICONS.map((icon) => (
                           <TooltipProvider key={icon.name}>
                             <Tooltip>

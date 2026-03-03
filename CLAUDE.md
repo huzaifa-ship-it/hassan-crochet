@@ -60,6 +60,8 @@ Get your Sanity project ID from [sanity.io/manage](https://www.sanity.io/manage)
 
 Access Sanity Studio at `http://localhost:3000/studio` to manage content.
 
+**External Image Hosting**: The project uses ImgBB (`i.ibb.co.com`) for some images. This domain is already whitelisted in `next.config.ts` alongside Sanity CDN domains.
+
 ## Project Structure
 
 ```
@@ -90,7 +92,12 @@ src/
 │   │   ├── BannerSlider.tsx      # Hero banner carousel with SwiperJS
 │   │   ├── ProductCard.tsx       # Product card with variants (regular + compact)
 │   │   ├── BentoGrid.tsx         # Feature highlights grid layout
-│   │   └── TestimonialsCarousel.tsx  # Customer reviews carousel
+│   │   ├── TestimonialsCarousel.tsx  # Customer reviews carousel
+│   │   ├── SocialFeed.tsx        # Social media feed component
+│   │   ├── EnhancedCTA.tsx       # Enhanced call-to-action section
+│   │   ├── BrandStory.tsx        # Brand story section
+│   │   ├── HowItWorks.tsx        # How it works section
+│   │   └── Testimonials.tsx      # Testimonials display component
 │   ├── search/                   # Search components
 │   │   ├── SearchDropdown.tsx    # Live search dropdown in header
 │   │   └── SearchResults.tsx     # Search results display
@@ -108,7 +115,6 @@ src/
 │   │   ├── banner.ts             # Banner/Hero schema
 │   │   ├── testimonial.ts        # Testimonial schema
 │   │   ├── newsletter.ts         # Newsletter schema
-│   │   ├── navigationMenu.ts     # Navigation menu schema
 │   │   └── index.ts              # Schema registry
 │   ├── queries.ts                # GROQ queries for all content types + TypeScript interfaces
 │   ├── structure.ts              # Sanity Studio structure
@@ -183,7 +189,8 @@ import * as fabric from "fabric";
 - `banner.ts`: Hero/announcement/promo banners with scheduling (startDate/endDate)
 - `testimonial.ts`: Customer reviews with ratings, images, product reference
 - `newsletter.ts`: Newsletter signup configuration with discount offers
-- `navigationMenu.ts`: Main/footer/mobile navigation with dropdown support
+
+**Note**: The queries in `src/sanity/queries.ts` also reference `collection` and `navigationMenu` types, but these schemas are not yet implemented in the schemaTypes directory.
 
 **Data Fetching** (`src/sanity/queries.ts`):
 ```tsx
@@ -199,7 +206,6 @@ import {
   getBanners,
   getTestimonials,
   getNewsletter,
-  getNavigationMenu,
   searchProducts
 } from "@/sanity/queries";
 
@@ -249,7 +255,9 @@ The `CustomizationCanvas` component (`src/components/CustomizationCanvas.tsx`) p
    - Featured Products horizontal scroll
    - BentoGrid feature highlights
    - TestimonialsCarousel
-   - CTA section
+   - SocialFeed, BrandStory, HowItWorks sections
+   - EnhancedCTA section
+   - Newsletter signup
 
 2. **Products listing** (`/products`): Displays all products with:
    - Sidebar filters: Categories, Collections, Quick Filters (featured, new, A-Z)
@@ -263,7 +271,10 @@ The `CustomizationCanvas` component (`src/components/CustomizationCanvas.tsx`) p
 
 5. **Search page** (`/search`): Search results with product filtering.
 
-6. **Sanity Studio** (`/studio`): Admin interface for managing all content types.
+6. **API Routes**:
+   - `/api/search?q=<query>`: Search endpoint that returns matching products (requires 2+ character minimum)
+
+7. **Sanity Studio** (`/studio`): Admin interface for managing all content types.
 
 ### Data Structure
 
