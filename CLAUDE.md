@@ -60,7 +60,7 @@ Get your Sanity project ID from [sanity.io/manage](https://www.sanity.io/manage)
 
 Access Sanity Studio at `http://localhost:3000/studio` to manage content.
 
-**External Image Hosting**: The project uses ImgBB (`i.ibb.co.com`) for some images. This domain is already whitelisted in `next.config.ts` alongside Sanity CDN domains.
+**External Image Hosting**: The project uses ImgBB (`i.ibb.co.com`) and Unsplash (`images.unsplash.com`) for some images. These domains are already whitelisted in `next.config.ts` alongside Sanity CDN domains.
 
 ## Project Structure
 

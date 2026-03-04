@@ -5,6 +5,7 @@ import { Download, Copy, Heart, Info, Palette, Type, Sparkles, ArrowRight, Shiel
 import { Pacifico, Delius, Meow_Script, Borel, Mystery_Quest, Pinyon_Script } from "next/font/google"
 
 import CustomizationCanvas, { CustomizationCanvasRef } from "@/components/CustomizationCanvas"
+import { SocialProofStats } from "@/components/home/SocialProofStats"
 import { Product } from "@/sanity/queries"
 
 import { Button } from "@/components/ui/button"
@@ -269,6 +270,11 @@ export default function ProductClient({ product }: ProductClientProps) {
               {product.shortDescription}
             </p>
           )}
+        </div>
+
+        {/* Social Proof Stats */}
+        <div className="mb-8">
+          <SocialProofStats />
         </div>
 
         {/* Main Content - Flex container with sticky */}
