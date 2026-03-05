@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from "react"
-import { Download, Copy, Heart, Info, Palette, Type, Sparkles, ArrowRight, Shield, Truck, Gem, Star, ChevronDown, ChevronUp, Check, ShoppingBag, ZoomIn, Award, Clock } from "lucide-react"
+import { Download, Copy, Heart, Info, Palette, Type, Sparkles, ArrowRight, Shield, Truck, Gem, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Check, ShoppingBag, ZoomIn, Award, Clock, Quote } from "lucide-react"
 import { Pacifico, Delius, Meow_Script, Borel, Mystery_Quest, Pinyon_Script } from "next/font/google"
 
 import CustomizationCanvas, { CustomizationCanvasRef } from "@/components/CustomizationCanvas"
@@ -18,6 +18,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+
+// Swiper imports
+import { Swiper, SwiperSlide } from "swiper/react"
+import { Autoplay, Pagination, Navigation } from "swiper/modules"
+import "swiper/css"
+import "swiper/css/pagination"
+import "swiper/css/navigation"
 
 // Configure Google Fonts
 const pacifico = Pacifico({ subsets: ["latin"], weight: "400", display: "swap" })
@@ -171,6 +178,70 @@ function getBadgeLabels(badges?: string[]): { primary?: string; secondary?: stri
     primary: badges[0],
     secondary: badges.length > 1 ? badges[1] : "Customizable",
   }
+}
+
+// Review Card Component
+interface Review {
+  id: number
+  name: string
+  location: string
+  image: string
+  rating: number
+  text: string
+  date: string
+}
+
+function ReviewCard({ review }: { review: Review }) {
+  return (
+    <Card className="overflow-hidden group hover:shadow-xl transition-all duration-300 border hover:border-primary/30 h-full flex flex-col">
+      {/* Review Image - Compact display */}
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-muted">
+        <img
+          src={review.image}
+          alt={`Customer photo from ${review.name}`}
+          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+        />
+        {/* Verified Badge - Smaller on mobile */}
+        <div className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 bg-white/90 backdrop-blur-sm rounded-full shadow-md">
+          <Check className="w-3 h-3 text-green-600" />
+          <span className="text-[10px] font-semibold text-gray-700 hidden sm:inline">Verified</span>
+        </div>
+      </div>
+
+      <CardContent className="p-3 sm:p-4 flex-1 flex flex-col">
+        {/* Stars - Smaller on mobile */}
+        <div className="flex items-center gap-0.5 mb-2">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              className={`w-3 h-3 sm:w-4 sm:h-4 ${star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`}
+            />
+          ))}
+        </div>
+
+        {/* Review Text - Clamp lines */}
+        <blockquote className="flex-1 mb-2 sm:mb-3">
+          <p className="text-xs sm:text-sm leading-relaxed text-foreground/90 line-clamp-3">
+            &ldquo;{review.text}&rdquo;
+          </p>
+        </blockquote>
+
+        {/* Author Info - Compact */}
+        <div className="pt-2 sm:pt-3 border-t border-border/50">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="font-semibold text-xs sm:text-sm">{review.name}</p>
+              <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center gap-1">
+                <span className="w-1 h-1 rounded-full bg-primary/50" />
+                {review.location}
+              </p>
+            </div>
+            <span className="text-[10px] sm:text-xs text-muted-foreground">{review.date}</span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
 }
 
 export default function ProductClient({ product }: ProductClientProps) {
@@ -412,9 +483,9 @@ export default function ProductClient({ product }: ProductClientProps) {
 
   return (
     <div className="bg-gradient-to-b from-background to-muted/10 min-h-screen">
-      <div className="mx-auto px-4 py-8 md:py-12 max-w-7xl w-full">
+      <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8 md:py-12 max-w-7xl w-full">
         {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
+        <nav className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground mb-6 sm:mb-8">
           <a href="/" className="hover:text-foreground transition-colors shrink-0">Home</a>
           <span className="shrink-0">/</span>
           <a href="/products" className="hover:text-foreground transition-colors shrink-0">Products</a>
@@ -423,22 +494,22 @@ export default function ProductClient({ product }: ProductClientProps) {
         </nav>
 
         {/* Product Header */}
-        <div className="text-center mb-8 md:mb-12 space-y-4">
-          <div className="flex items-center justify-center gap-2 flex-wrap">
+        <div className="text-center mb-6 sm:mb-8 md:mb-12 space-y-3 sm:space-y-4 px-2">
+          <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
             {badges.primary && (
-              <Badge className="bg-primary/10 text-primary hover:bg-primary/20">{badges.primary}</Badge>
+              <Badge className="bg-primary/10 text-primary hover:bg-primary/20 text-xs sm:text-sm px-2 sm:px-3 py-0.5 sm:py-1">{badges.primary}</Badge>
             )}
             {badges.secondary && (
-              <Badge variant="secondary">{badges.secondary}</Badge>
+              <Badge variant="secondary" className="text-xs sm:text-sm px-2 sm:px-3 py-0.5 sm:py-1">{badges.secondary}</Badge>
             )}
             {product.category && (
-              <Badge variant="outline">{product.category.title}</Badge>
+              <Badge variant="outline" className="text-xs sm:text-sm px-2 sm:px-3 py-0.5 sm:py-1">{product.category.title}</Badge>
             )}
             {product.inStock === false && (
-              <Badge variant="destructive">Out of Stock</Badge>
+              <Badge variant="destructive" className="text-xs sm:text-sm px-2 sm:px-3 py-0.5 sm:py-1">Out of Stock</Badge>
             )}
           </div>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight px-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight">
             {product.title}
           </h1>
           {product.shortDescription && (
@@ -454,21 +525,21 @@ export default function ProductClient({ product }: ProductClientProps) {
           <div className="sticky top-16 lg:top-20 self-start flex-shrink-0 w-full lg:w-[45%] lg:max-w-lg z-20 order-first">
             <Card className="overflow-hidden shadow-2xl border-2">
               <CardContent className="p-0">
-                <div className="relative aspect-square md:aspect-[4/5] lg:aspect-[3/4] w-full h-[280px] md:h-[350px] lg:min-h-[500px] lg:max-h-[600px] bg-gradient-to-br from-muted/30 via-muted/20 to-muted/30 overflow-hidden">
+                <div className="relative aspect-square md:aspect-[4/5] lg:aspect-[3/4] w-full h-[280px] md:h-[350px] lg:min-h-[500px] lg:max-h-[600px] bg-muted/20 overflow-hidden">
                   {/* Badges */}
-                  <div className="absolute top-4 left-4 z-10 flex flex-col gap-2">
+                  <div className="absolute top-3 sm:top-4 left-3 sm:left-4 z-10 flex flex-col gap-2">
                     {badges.primary && (
-                      <Badge className="shadow-lg bg-primary text-primary-foreground px-3 py-1 text-xs">
+                      <Badge className="shadow-lg bg-primary text-primary-foreground px-2 sm:px-3 py-1 text-[10px] sm:text-xs">
                         {badges.primary}
                       </Badge>
                     )}
                   </div>
 
                   {/* Interactive indicator */}
-                  <div className="absolute bottom-4 right-4 z-10 pointer-events-none">
-                    <div className="flex items-center gap-2 px-4 py-2 bg-background/95 backdrop-blur-md rounded-full border shadow-xl">
-                      <Sparkles className="w-4 h-4 text-primary animate-pulse" />
-                      <span className="text-sm font-medium">Drag to customize</span>
+                  <div className="absolute bottom-3 right-3 sm:bottom-4 sm:right-4 z-10 pointer-events-none">
+                    <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-2 bg-background border rounded-full shadow-lg">
+                      <Sparkles className="w-3 h-3 sm:w-4 sm:h-4 text-primary animate-pulse" />
+                      <span className="text-[10px] sm:text-xs sm:text-sm font-medium">Drag to customize</span>
                     </div>
                   </div>
 
@@ -490,18 +561,18 @@ export default function ProductClient({ product }: ProductClientProps) {
 
             {/* Color Selection */}
             <Card className="shadow-sm w-full overflow-hidden">
-              <CardHeader className="pb-4">
+              <CardHeader className="pb-3 sm:pb-4 px-3 sm:px-6">
                 {/* In demand text above color selection */}
-                <div className="mb-3">
-                  <p className="text-sm md:text-base font-bold text-red-600 dark:text-red-500 flex items-center gap-1 flex-wrap">
+                <div className="mb-2 sm:mb-3">
+                  <p className="text-xs sm:text-sm md:text-base font-bold text-red-600 dark:text-red-500 flex items-center gap-1 flex-wrap">
                     🔥 In demand. <span className="inline-block min-w-[2ch]">{boughtIn24h}</span> people bought this in the last 24 hours.
                   </p>
                 </div>
-                <CardTitle className="text-base">Choose Your Color</CardTitle>
-                <CardDescription>Select your preferred color variant</CardDescription>
+                <CardTitle className="text-sm sm:text-base">Choose Your Color</CardTitle>
+                <CardDescription className="text-xs sm:text-sm">Select your preferred color variant</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-5 gap-2">
+              <CardContent className="px-3 sm:px-6 pb-4 sm:pb-6">
+                <div className="grid grid-cols-5 gap-1.5 sm:gap-2">
                   {colors.map((color) => (
                     <TooltipProvider key={color.name}>
                       <Tooltip>
@@ -509,8 +580,8 @@ export default function ProductClient({ product }: ProductClientProps) {
                           <button
                             onClick={() => setSelectedColor(color)}
                             aria-label={color.name}
-                            className={`relative aspect-square rounded-lg overflow-hidden transition-all duration-200 border-2 ${selectedColor?.name === color.name
-                              ? "shadow-lg ring-2 ring-primary border-primary"
+                            className={`relative aspect-square rounded-md sm:rounded-lg overflow-hidden transition-all duration-200 border-2 ${selectedColor?.name === color.name
+                              ? "shadow-lg ring-1 sm:ring-2 ring-primary border-primary"
                               : "border-transparent hover:shadow-md opacity-90 hover:opacity-100"
                               }`}
                           >
@@ -522,12 +593,12 @@ export default function ProductClient({ product }: ProductClientProps) {
                               />
                             ) : (
                               <div className="w-full h-full bg-muted flex items-center justify-center">
-                                <span className="text-xs text-muted-foreground">{color.name}</span>
+                                <span className="text-[10px] sm:text-xs text-muted-foreground">{color.name}</span>
                               </div>
                             )}
                             {selectedColor?.name === color.name && (
                               <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                                <Check className="h-8 w-8 text-white drop-shadow-lg" />
+                                <Check className="h-5 w-5 sm:h-8 sm:w-8 text-white drop-shadow-lg" />
                               </div>
                             )}
                           </button>
@@ -543,80 +614,81 @@ export default function ProductClient({ product }: ProductClientProps) {
             </Card>
 
             {/* Customization Studio */}
-            <Card className="shadow-lg border-2 w-full overflow-hidden">
-              <CardContent className="space-y-6 ">
+            <Card className="shadow-lg border w-full overflow-hidden">
+              <CardContent className="space-y-4 sm:space-y-6 p-3 sm:p-6">
                 <Accordion type="multiple" defaultValue={["text", "icons"]} className="w-full">
                   {/* Text Customization */}
                   <AccordionItem value="text" className="border-b last:border-0">
-                    <AccordionTrigger className="hover:no-underline py-4">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                          <Type className="w-5 h-5 text-primary" />
+                    <AccordionTrigger className="hover:no-underline py-3 sm:py-4 px-1">
+                      <div className="flex items-center gap-2 sm:gap-3">
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                          <Type className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                         </div>
                         <div className="text-left min-w-0 flex-1">
                           {/* Customizing count above Add Text */}
-                          <div className="font-semibold text-sm md:text-base text-red-600 dark:text-red-500 flex items-center gap-1 flex-wrap">
+                          <div className="font-semibold text-xs sm:text-sm md:text-base text-red-600 dark:text-red-500 flex items-center gap-1 flex-wrap">
                             👀 <span className="inline-block min-w-[2ch]">{customizingNow}</span> peoples are customizing this right now.
                           </div>
-                          <div className="text-xs text-muted-foreground mt-1">Personalize with your message</div>
+                          <div className="text-[10px] sm:text-xs text-muted-foreground mt-0.5 sm:mt-1">Personalize with your message</div>
                         </div>
                       </div>
                     </AccordionTrigger>
-                    <AccordionContent className="pt-4 pb-6 space-y-5">
+                    <AccordionContent className="pt-3 sm:pt-4 pb-4 sm:pb-6 space-y-3 sm:space-y-5 px-1">
                       {/* Text Input */}
-                      <div className="space-y-2">
-                        <Label htmlFor="custom-text" className="text-sm font-medium">Your Message</Label>
-                        <div className="flex gap-2">
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <Label htmlFor="custom-text" className="text-xs sm:text-sm font-medium">Your Message</Label>
+                        <div className="flex gap-1.5 sm:gap-2">
                           <Input
                             id="custom-text"
                             placeholder="Type your message..."
                             value={customText}
                             onChange={(e) => setCustomText(e.target.value)}
                             onKeyDown={(e) => e.key === "Enter" && handleAddText()}
-                            className="flex-1 h-11"
+                            className="flex-1 h-9 sm:h-11 text-sm"
                           />
-                          <Button onClick={handleAddText} size="icon" className="h-11 w-11" disabled={!customText.trim()}>
-                            <Check className="h-4 w-4" />
+                          <Button onClick={handleAddText} size="icon" className="h-9 w-9 sm:h-11 sm:w-11" disabled={!customText.trim()}>
+                            <Check className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           </Button>
                         </div>
                       </div>
 
  {/* Font Selection */}
-                      <div className="space-y-2">
-                        <Label htmlFor="text-font" className="text-sm font-medium">Font Style</Label>
+                      <div className="space-y-1.5 sm:space-y-2">
+                        <Label htmlFor="text-font" className="text-xs sm:text-sm font-medium">Font Style</Label>
                         <Select value={textFont} onValueChange={handleFontChange}>
-                          <SelectTrigger id="text-font" className="w-full h-11">
+                          <SelectTrigger id="text-font" className="w-full h-9 sm:h-11 text-sm">
                             <SelectValue>
-                              <span style={{ fontFamily: textFont }}>
+                              <span style={{ fontFamily: textFont }} className="text-xs sm:text-sm">
                                 {FONTS.find((f) => f.value === textFont)?.name}
                               </span>
                             </SelectValue>
                           </SelectTrigger>
                           <SelectContent>
                             {FONTS.map((f) => (
-                              <SelectItem key={f.value} value={f.value}>
+                              <SelectItem key={f.value} value={f.value} className="text-sm">
                                 <span style={{ fontFamily: f.value }}>{f.name}</span>
                               </SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
                       </div>
-                      
+
 
                       {/* Text Color */}
-                      <div className="space-y-4">
+                      <div className="space-y-3 sm:space-y-4">
                         <div className="flex items-center justify-between">
-                          <Label className="text-sm font-medium">Text Color</Label>
+                          <Label className="text-xs sm:text-sm font-medium">Text Color</Label>
                           {hasSelectedText && (
-                            <span className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full flex items-center gap-1">
-                              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                              Editing selected text
+                            <span className="text-[10px] sm:text-xs text-primary bg-primary/10 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full flex items-center gap-1">
+                              <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-primary animate-pulse" />
+                              <span className="hidden sm:inline">Editing selected text</span>
+                              <span className="sm:hidden">Editing</span>
                             </span>
                           )}
                         </div>
 
                         {/* Single Colors Grid */}
-                        <div className="flex flex-wrap gap-2 p-1 overflow-hidden">
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 p-1 overflow-hidden">
                           {SINGLE_TEXT_COLORS.map((color) => (
                             <TooltipProvider key={color.value}>
                               <Tooltip>
@@ -810,15 +882,15 @@ export default function ProductClient({ product }: ProductClientProps) {
             <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground shadow-xl border-0 w-full overflow-hidden relative">
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
               <div className="absolute -bottom-16 -left-16 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
-              <CardContent className="p-6 space-y-4 relative z-10">
+              <CardContent className="p-4 sm:p-6 space-y-3 sm:space-y-4 relative z-10">
                 <div className="flex items-center justify-center">
-                  <Badge className="bg-white/20 hover:bg-white/30 text-white border-0 px-4 py-1.5 text-xs font-semibold tracking-wide shadow-md backdrop-blur-sm">
+                  <Badge className="bg-white/20 hover:bg-white/30 text-white border-0 px-3 sm:px-4 py-1 sm:py-1.5 text-[10px] sm:text-xs font-semibold tracking-wide shadow-md backdrop-blur-sm">
                     ORDER YOUR CUSTOM PIECE
                   </Badge>
                 </div>
                 <div className="text-center">
-                  <div className="flex items-center justify-center gap-2 text-sm">
-                    <Star className="w-4 h-4 fill-yellow-300 text-yellow-300" />
+                  <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-xs sm:text-sm">
+                    <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-yellow-300 text-yellow-300" />
                     <span>Premium handmade craftsmanship</span>
                   </div>
                 </div>
@@ -828,30 +900,30 @@ export default function ProductClient({ product }: ProductClientProps) {
                   rel="noopener noreferrer"
                   className="block"
                 >
-                  <Button className="w-full bg-white text-primary hover:bg-white/90 h-12 font-semibold shadow-xl">
-                    <ShoppingBag className="w-5 h-5 mr-2" />
+                  <Button className="w-full bg-white text-primary hover:bg-white/90 h-10 sm:h-12 font-semibold shadow-xl text-sm sm:text-base">
+                    <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
                     Order on Etsy
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5 sm:ml-2" />
                   </Button>
                 </a>
-                <div className="grid grid-cols-3 gap-3 pt-2">
+                <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-1 sm:pt-2">
                   <div className="text-center">
-                    <div className="w-9 h-9 mx-auto mb-1 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                      <Shield className="w-4 h-4" />
+                    <div className="w-7 h-7 sm:w-9 sm:h-9 mx-auto mb-1 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                      <Shield className="w-3 h-3 sm:w-4 sm:h-4" />
                     </div>
-                    <p className="text-[10px] font-medium opacity-90">Secure</p>
+                    <p className="text-[9px] sm:text-[10px] font-medium opacity-90">Secure</p>
                   </div>
                   <div className="text-center">
-                    <div className="w-9 h-9 mx-auto mb-1 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                      <Truck className="w-4 h-4" />
+                    <div className="w-7 h-7 sm:w-9 sm:h-9 mx-auto mb-1 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                      <Truck className="w-3 h-3 sm:w-4 sm:h-4" />
                     </div>
-                    <p className="text-[10px] font-medium opacity-90">Fast</p>
+                    <p className="text-[9px] sm:text-[10px] font-medium opacity-90">Fast</p>
                   </div>
                   <div className="text-center">
-                    <div className="w-9 h-9 mx-auto mb-1 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                      <Heart className="w-4 h-4" />
+                    <div className="w-7 h-7 sm:w-9 sm:h-9 mx-auto mb-1 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                      <Heart className="w-3 h-3 sm:w-4 sm:h-4" />
                     </div>
-                    <p className="text-[10px] font-medium opacity-90">Handmade</p>
+                    <p className="text-[9px] sm:text-[10px] font-medium opacity-90">Handmade</p>
                   </div>
                 </div>
               </CardContent>
@@ -860,71 +932,90 @@ export default function ProductClient({ product }: ProductClientProps) {
         </div>
 
         {/* Reviews Section */}
-        <Card className="mt-12 shadow-sm w-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Star className="w-5 h-5 fill-yellow-500 text-yellow-500" />
+        <div className="mt-16 space-y-8">
+          {/* Section Header */}
+          <div className="text-center space-y-2 sm:space-y-4 px-4">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-primary/5 border border-primary/10">
+              <Quote className="w-3 h-3 sm:w-4 sm:h-4 text-primary" />
+              <span className="text-xs sm:text-sm font-medium text-primary">Happy Customers</span>
+            </div>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
               Customer Reviews
-            </CardTitle>
-            <CardDescription>See what our customers are saying</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {/* Rating Summary */}
-            <div className="text-center py-6 border-b">
-              <div className="flex items-center justify-center gap-1 mb-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} className="w-6 h-6 fill-yellow-500 text-yellow-500" />
-                ))}
-              </div>
-              <p className="text-3xl font-bold">5.0</p>
-              <p className="text-sm text-muted-foreground">Based on {reviews.length + 47} reviews</p>
-            </div>
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto px-4">
+              Real photos from real customers. See how our crochet pieces look on adorable little ones!
+            </p>
+          </div>
 
-            {/* Reviews Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
+          {/* Rating Summary */}
+          
+
+          {/* Swiper Carousel */}
+          <div className="relative px-4 sm:px-6 md:px-0">
+            <Swiper
+              modules={[Autoplay, Pagination, Navigation]}
+              spaceBetween={12}
+              slidesPerView={1.2}
+              centeredSlides={true}
+              autoplay={{
+                delay: 5000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: true,
+              }}
+              pagination={{
+                clickable: true,
+                bulletClass: "w-2 h-2 rounded-full bg-primary/30 opacity-100 transition-all",
+                bulletActiveClass: "w-6 bg-primary",
+              }}
+              navigation={{
+                nextEl: ".reviews-button-next",
+                prevEl: ".reviews-button-prev",
+              }}
+              loop={true}
+              className="reviews-swiper pb-12"
+              breakpoints={{
+                480: {
+                  slidesPerView: 1.5,
+                  spaceBetween: 12,
+                },
+                640: {
+                  slidesPerView: 2,
+                  spaceBetween: 16,
+                },
+                768: {
+                  slidesPerView: 2,
+                  spaceBetween: 20,
+                  centeredSlides: false,
+                },
+                1024: {
+                  slidesPerView: 3,
+                  spaceBetween: 24,
+                  centeredSlides: false,
+                },
+              }}
+            >
               {reviews.map((review) => (
-                <Card key={review.id} className="overflow-hidden">
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-3">
-                      {/* Review Image */}
-                      <div className="flex-shrink-0">
-                        <img
-                          src={review.image}
-                          alt={review.name}
-                          className="w-16 h-16 rounded-full object-cover border-2 border-border"
-                        />
-                      </div>
-
-                      {/* Review Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-semibold text-sm truncate">{review.name}</h4>
-                          <span className="text-xs text-muted-foreground">{review.date}</span>
-                        </div>
-                        <p className="text-xs text-muted-foreground mb-2">{review.location}</p>
-
-                        {/* Stars */}
-                        <div className="flex items-center gap-0.5 mb-2">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star
-                              key={star}
-                              className={`w-3 h-3 ${star <= review.rating ? 'fill-yellow-500 text-yellow-500' : 'text-gray-300'}`}
-                            />
-                          ))}
-                        </div>
-
-                        {/* Review Text */}
-                        <p className="text-sm text-foreground leading-relaxed line-clamp-3">
-                          "{review.text}"
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                <SwiperSlide key={review.id}>
+                  <ReviewCard review={review} />
+                </SwiperSlide>
               ))}
-            </div>
-          </CardContent>
-        </Card>
+            </Swiper>
+
+            {/* Navigation Buttons - Hidden on mobile */}
+            <button
+              className="reviews-button-prev absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all flex items-center justify-center shadow-lg group hidden sm:flex"
+              aria-label="Previous review"
+            >
+              <ChevronLeft className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            </button>
+            <button
+              className="reviews-button-next absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-background border-2 border-primary/20 hover:border-primary hover:bg-primary hover:text-primary-foreground transition-all flex items-center justify-center shadow-lg group hidden sm:flex"
+              aria-label="Next review"
+            >
+              <ChevronRight className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )

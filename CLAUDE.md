@@ -45,6 +45,7 @@ bunx sanity@latest docs            # Open Sanity documentation
 - **Swiper**: Swiper 12.1.2 for carousels/sliders
 - **Utilities**: class-variance-authority, clsx, tailwind-merge for conditional styling
 - **Fonts**: Geist Sans and Geist Mono (via `next/font/google`), Plus Jakarta Sans, Lora, IBM Plex Mono (via shadcn)
+- **Animation**: framer-motion 12.34.3 for component animations
 
 ## Environment Variables
 
@@ -67,7 +68,7 @@ Access Sanity Studio at `http://localhost:3000/studio` to manage content.
 ```
 src/
 ├── app/
-│   ├── layout.tsx                # Root layout with fonts, TooltipProvider, Header, SiteFooter
+│   ├── layout.tsx                # Root layout with fonts, Providers (Toaster + Tooltip), Header, SiteFooter
 │   ├── page.tsx                  # Home page - Sanity-powered with banners, new arrivals, featured products
 │   ├── globals.css               # Global styles with Tailwind, shadcn, CSS variables
 │   ├── studio/
@@ -103,6 +104,7 @@ src/
 │   ├── search/                   # Search components
 │   │   ├── SearchDropdown.tsx    # Live search dropdown in header
 │   │   └── SearchResults.tsx     # Search results display
+│   ├── providers.tsx             # Providers wrapper (Toaster + Tooltip)
 │   ├── CustomizationCanvas.tsx   # Fabric.js canvas wrapper
 │   ├── ProductCard.tsx           # Shared product card component
 │   ├── Testimonials.tsx          # Testimonials display component
@@ -257,6 +259,23 @@ const product = await getProductBySlug("tray-table");
 **Draft Exclusion**: All queries include `!(_id in path("drafts.**"))` to exclude draft documents from production queries.
 
 **ISR Revalidation**: Product pages use ISR with `revalidate: 60` (60 seconds). Content updates appear within 1 minute.
+
+### Toast Notifications
+
+The project includes a custom toast notification system (`src/components/ui/toast.tsx`):
+- `ToasterProvider`: Wrap your app with this provider (already done in root layout via `Providers` component)
+- `useToaster()`: Hook to access toast functions in client components
+- `addToast(message, type)`: Display toast notifications (supports `success`, `error`, `info` types)
+- Toasts auto-dismiss after 3 seconds with smooth animations
+
+```tsx
+import { useToaster } from "@/components/ui/toast";
+
+function MyComponent() {
+  const { addToast } = useToaster();
+  addToast("Item added to cart", "success");
+}
+```
 
 ### Customization Canvas Features
 
