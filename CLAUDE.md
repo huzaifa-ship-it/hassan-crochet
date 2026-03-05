@@ -82,6 +82,7 @@ src/
 │   └── test-sanity/page.tsx      # Sanity connection test page
 ├── components/
 │   ├── ui/                       # shadcn/ui components (button, tooltip, etc.) + ecommerce.tsx
+│   ├── spectrumui/               # Custom UI components (tabnavbar, etc.)
 │   ├── layout/                   # Layout components
 │   │   ├── Header.tsx            # Main header with navigation and search dropdown
 │   │   ├── Footer.tsx            # Footer with links and newsletter
@@ -94,6 +95,7 @@ src/
 │   │   ├── BentoGrid.tsx         # Feature highlights grid layout
 │   │   ├── TestimonialsCarousel.tsx  # Customer reviews carousel
 │   │   ├── SocialFeed.tsx        # Social media feed component
+│   │   ├── SocialProofStats.tsx  # Social proof stats (live viewers, recent purchases)
 │   │   ├── EnhancedCTA.tsx       # Enhanced call-to-action section
 │   │   ├── BrandStory.tsx        # Brand story section
 │   │   ├── HowItWorks.tsx        # How it works section
@@ -224,6 +226,25 @@ const product = await getProductBySlug("tray-table");
 - `useCdn: false` - Disabled for ISR to get fresh content on revalidation
 - `perspective: 'published'` - Only fetch published content
 - `stega` - Enabled for preview deployments
+- `ignoreBrowserTokenWarning: true` - Suppresses browser token warnings
+
+**Live Content API** (`src/sanity/lib/live.ts`):
+- Exports `sanityFetch` for live content updates (keeps content automatically updated)
+- Exports `SanityLive` component (render in layout for live content to work)
+- See [next-sanity live content](https://github.com/sanity-io/next-sanity#live-content-api) for details
+
+**Debug Utilities** (`src/sanity/lib/debug.ts`):
+- `testQuery()` - Test raw GROQ queries with timing and error details
+- `getDocumentCount()` - Count documents by type
+- `getDocumentIds()` - Get all document IDs for a type
+- `checkConfig()` - Verify environment configuration
+- `logConfig()` - Log configuration to console
+
+**Main Exports** (`src/sanity/index.ts`):
+- All query functions and types from `queries.ts`
+- Client instance
+- Live content utilities (`sanityFetch`, `SanityLive`)
+- Debug utilities
 
 **Sanity Studio**: Access at `/studio` route to:
 - Create/edit products with variants, categories, banners, testimonials, newsletters, navigation menus
@@ -255,7 +276,8 @@ The `CustomizationCanvas` component (`src/components/CustomizationCanvas.tsx`) p
    - Featured Products horizontal scroll
    - BentoGrid feature highlights
    - TestimonialsCarousel
-   - SocialFeed, BrandStory, HowItWorks sections
+   - SocialFeed, SocialProofStats sections
+   - BrandStory, HowItWorks sections
    - EnhancedCTA section
    - Newsletter signup
 
@@ -308,6 +330,17 @@ The `CustomizationCanvas` component (`src/components/CustomizationCanvas.tsx`) p
 - Keyboard navigation support
 - Links to full search page
 
+**Home Components** (`src/components/home/index.ts`):
+- Exports `BannerSlider`, `ProductCard`, `FeaturedProductCard`
+- Exports `BentoGrid`, `FeatureHighlight`, `TestimonialsCarousel`, `TestimonialGrid`
+- Import from `@/components/home` for cleaner imports
+
+**SocialProofStats** (`src/components/home/SocialProofStats.tsx`):
+- Displays live viewer count with animated fluctuations
+- Shows products sold today with trending indicator
+- Recent purchase notifications with location and time
+- Animated transitions and responsive design
+
 ## Styling Notes
 
 - Tailwind CSS v4 uses `@import "tailwindcss"` in `globals.css`
@@ -344,5 +377,6 @@ For Sanity CMS:
 - `docs/SANITY_QUICKSTART.md` - Getting started guide with Sanity CMS
 - `docs/SANITY_SCHEMA_REFERENCE.md` - Complete schema and GROQ query reference
 - `docs/SANITY_TROUBLESHOOTING.md` - Common issues and debugging guide
+- `docs/SANITY_FIXES_SUMMARY.md` - Summary of Sanity CMS fixes applied to the project
 
 **Debug Route**: Access `/test-sanity` to verify Sanity connection and test queries.

@@ -34,7 +34,8 @@
       "mcp__playwright__browser_resize",
       "mcp__playwright__browser_evaluate",
       "mcp__playwright__browser_take_screenshot",
-      "Bash(bun dev)"
+      "Bash(bun dev)",
+      "Bash(bun run lint)"
     ]
   },
   "enableAllProjectMcpServers": true,

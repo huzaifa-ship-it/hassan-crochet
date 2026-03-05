@@ -5,8 +5,8 @@ import { Download, Copy, Heart, Info, Palette, Type, Sparkles, ArrowRight, Shiel
 import { Pacifico, Delius, Meow_Script, Borel, Mystery_Quest, Pinyon_Script } from "next/font/google"
 
 import CustomizationCanvas, { CustomizationCanvasRef } from "@/components/CustomizationCanvas"
-import { SocialProofStats } from "@/components/home/SocialProofStats"
 import { Product } from "@/sanity/queries"
+import { useToaster } from "@/components/ui/toast"
 
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -26,6 +26,39 @@ const meowScript = Meow_Script({ subsets: ["latin"], weight: "400", display: "sw
 const borel = Borel({ subsets: ["latin"], weight: "400", display: "swap" })
 const mysteryQuest = Mystery_Quest({ subsets: ["latin"], weight: "400", display: "swap" })
 const pinyonScript = Pinyon_Script({ subsets: ["latin"], weight: "400", display: "swap" })
+
+// Purchase notification data (defined outside component to avoid re-renders)
+const PURCHASE_LOCATIONS = [
+  { city: "Phoenix", country: "USA" },
+  { city: "New York", country: "USA" },
+  { city: "Los Angeles", country: "USA" },
+  { city: "Chicago", country: "USA" },
+  { city: "Houston", country: "USA" },
+  { city: "Miami", country: "USA" },
+  { city: "Seattle", country: "USA" },
+  { city: "Boston", country: "USA" },
+  { city: "Dallas", country: "USA" },
+  { city: "Atlanta", country: "USA" },
+  { city: "Denver", country: "USA" },
+  { city: "London", country: "UK" },
+  { city: "Toronto", country: "Canada" },
+  { city: "Sydney", country: "Australia" },
+  { city: "Berlin", country: "Germany" },
+  { city: "Paris", country: "France" },
+  { city: "Rome", country: "Italy" },
+]
+
+const TIME_AGO_OPTIONS = [
+  "Just now",
+  "1 minute ago",
+  "2 minutes ago",
+  "3 minutes ago",
+  "5 minutes ago",
+  "8 minutes ago",
+  "10 minutes ago",
+  "12 minutes ago",
+  "15 minutes ago",
+]
 
 const ICONS = [
   { name: "Blue Flower", url: "/icons/Blue Flower-half.png" },
@@ -142,6 +175,64 @@ function getBadgeLabels(badges?: string[]): { primary?: string; secondary?: stri
 
 export default function ProductClient({ product }: ProductClientProps) {
   const canvasRef = useRef<CustomizationCanvasRef>(null)
+  const { addToast } = useToaster()
+
+  // Social proof state
+  const [boughtIn24h, setBoughtIn24h] = useState(() => Math.floor(Math.random() * 50) + 80)
+  const [customizingNow, setCustomizingNow] = useState(() => Math.floor(Math.random() * 30) + 70)
+
+  // Show purchase notification toast periodically
+  useEffect(() => {
+    const showPurchaseNotification = () => {
+      const location = PURCHASE_LOCATIONS[Math.floor(Math.random() * PURCHASE_LOCATIONS.length)]
+      const timeAgo = TIME_AGO_OPTIONS[Math.floor(Math.random() * TIME_AGO_OPTIONS.length)]
+
+      addToast({
+        variant: "purchase",
+        message: `Someone from ${location.city}, ${location.country} purchased ${timeAgo}`,
+        duration: 6000,
+      })
+    }
+
+    // Show first notification after 3 seconds
+    const firstTimer = setTimeout(showPurchaseNotification, 3000)
+
+    // Show subsequent notifications every 15-25 seconds
+    const intervalTimer = setInterval(() => {
+      showPurchaseNotification()
+    }, Math.random() * 10000 + 15000)
+
+    return () => {
+      clearTimeout(firstTimer)
+      clearInterval(intervalTimer)
+    }
+  }, [addToast])
+
+  // Animate bought count (slower, more realistic)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBoughtIn24h((prev) => {
+        // Only increase occasionally (70% chance of staying the same or +1, 30% chance of -1)
+        const change = Math.random() > 0.3 ? (Math.random() > 0.5 ? 1 : 0) : -1
+        return Math.max(50, Math.min(150, prev + change))
+      })
+    }, 15000) // Update every 15 seconds instead of 3
+
+    return () => clearInterval(interval)
+  }, [])
+
+  // Animate customizing count (slower, more realistic)
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCustomizingNow((prev) => {
+        // Small fluctuations, mostly staying stable
+        const change = Math.floor(Math.random() * 3) - 1 // -1, 0, or +1
+        return Math.max(40, Math.min(120, prev + change))
+      })
+    }, 20000) // Update every 20 seconds instead of 4
+
+    return () => clearInterval(interval)
+  }, [])
 
   // Convert Sanity variants to color format
   const colors = product.variants?.map((v) => ({
@@ -272,11 +363,6 @@ export default function ProductClient({ product }: ProductClientProps) {
           )}
         </div>
 
-        {/* Social Proof Stats */}
-        <div className="mb-8">
-          <SocialProofStats />
-        </div>
-
         {/* Main Content - Flex container with sticky */}
         <div className="flex flex-col lg:flex-row lg:gap-6 lg:items-start w-full">
           {/* Left Column - Canvas (Sticky on all devices) */}
@@ -313,107 +399,19 @@ export default function ProductClient({ product }: ProductClientProps) {
 
           {/* Right Column - Customization (Scrollable) */}
           <div className="space-y-6 w-full lg:w-[55%] lg:max-w-xl min-w-0">
-            {/* Product Description */}
-            <Card className="shadow-sm w-full overflow-hidden">
-              <CardHeader className="pb-4">
-                <div className="flex items-center gap-2">
-                  <Info className="w-5 h-5 text-primary" />
-                  <CardTitle className="text-lg">About This Product</CardTitle>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {product.description && (
-                  <div className="prose prose-sm max-w-none">
-                    {showFullDescription ? (
-                      <>
-                        <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{product.description}</p>
-                        <Button
-                          variant="link"
-                          size="sm"
-                          className="px-0 text-primary h-8"
-                          onClick={() => setShowFullDescription(false)}
-                        >
-                          Show less <ChevronUp className="ml-1 h-4 w-4" />
-                        </Button>
-                      </>
-                    ) : (
-                      <>
-                        <p className="text-muted-foreground line-clamp-3 whitespace-pre-wrap leading-relaxed">{product.description}</p>
-                        {product.description.length > 150 && (
-                          <Button
-                            variant="link"
-                            size="sm"
-                            className="px-0 text-primary h-8"
-                            onClick={() => setShowFullDescription(true)}
-                          >
-                            Read more <ChevronDown className="ml-1 h-4 w-4" />
-                          </Button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
-
-                {/* Features Grid */}
-                <div className="grid grid-cols-2 gap-4 pt-4">
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border">
-                    <Shield className="h-5 w-5 text-primary flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">Handmade</p>
-                      <p className="text-xs text-muted-foreground">With love & care</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border">
-                    <Truck className="h-5 w-5 text-primary flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">Fast Shipping</p>
-                      <p className="text-xs text-muted-foreground">Worldwide delivery</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border">
-                    <Gem className="h-5 w-5 text-primary flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">Premium Quality</p>
-                      <p className="text-xs text-muted-foreground">Best materials</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 border">
-                    <Clock className="h-5 w-5 text-primary flex-shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">Made to Order</p>
-                      <p className="text-xs text-muted-foreground">Just for you</p>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
 
             {/* Action Bar */}
-            <div className="flex items-center justify-between p-4 rounded-xl border bg-card shadow-sm">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setIsFavorite(!isFavorite)}
-                className={isFavorite ? "text-destructive" : ""}
-              >
-                <Heart className={`h-6 w-6 ${isFavorite ? "fill-current" : ""}`} />
-              </Button>
-              <a
-                href={product.etsyLink || "https://www.etsy.com"}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button size="lg" className="gap-2 shadow-lg">
-                  <ShoppingBag className="h-5 w-5" />
-                  Order on Etsy
-                  <ArrowRight className="h-4 w-4" />
-                </Button>
-              </a>
-            </div>
+
 
             {/* Color Selection */}
             <Card className="shadow-sm w-full overflow-hidden">
               <CardHeader className="pb-4">
+                {/* In demand text above color selection */}
+                <div className="mb-3">
+                  <p className="text-base font-bold text-red-600 dark:text-red-500 flex items-center gap-1">
+                    🔥 In demand. <span className="inline-block min-w-[2ch]">{boughtIn24h}</span> people bought this in the last 24 hours.
+                  </p>
+                </div>
                 <CardTitle className="text-base">Choose Your Color</CardTitle>
                 <CardDescription>Select your preferred color variant</CardDescription>
               </CardHeader>
@@ -461,14 +459,7 @@ export default function ProductClient({ product }: ProductClientProps) {
 
             {/* Customization Studio */}
             <Card className="shadow-lg border-2 w-full overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5">
-                <div className="flex items-center gap-2">
-                  <Palette className="w-5 h-5 text-primary" />
-                  <CardTitle>Customization Studio</CardTitle>
-                </div>
-                <CardDescription>Personalize your product with text or icons</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6 pt-6">
+              <CardContent className="space-y-6 ">
                 <Accordion type="multiple" defaultValue={["text", "icons"]} className="w-full">
                   {/* Text Customization */}
                   <AccordionItem value="text" className="border-b last:border-0">
@@ -478,8 +469,11 @@ export default function ProductClient({ product }: ProductClientProps) {
                           <Type className="w-5 h-5 text-primary" />
                         </div>
                         <div className="text-left">
-                          <div className="font-semibold">Add Text</div>
-                          <div className="text-xs text-muted-foreground">Personalize with your message</div>
+                          {/* Customizing count above Add Text */}
+                          <div className="font-semibold text-red-600 dark:text-red-500 flex items-center gap-1">
+                            👀 <span className="inline-block min-w-[2ch]">{customizingNow}</span> peoples are customizing this right now.
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-1">Personalize with your message</div>
                         </div>
                       </div>
                     </AccordionTrigger>
@@ -502,6 +496,28 @@ export default function ProductClient({ product }: ProductClientProps) {
                         </div>
                       </div>
 
+ {/* Font Selection */}
+                      <div className="space-y-2">
+                        <Label htmlFor="text-font" className="text-sm font-medium">Font Style</Label>
+                        <Select value={textFont} onValueChange={handleFontChange}>
+                          <SelectTrigger id="text-font" className="w-full h-11">
+                            <SelectValue>
+                              <span style={{ fontFamily: textFont }}>
+                                {FONTS.find((f) => f.value === textFont)?.name}
+                              </span>
+                            </SelectValue>
+                          </SelectTrigger>
+                          <SelectContent>
+                            {FONTS.map((f) => (
+                              <SelectItem key={f.value} value={f.value}>
+                                <span style={{ fontFamily: f.value }}>{f.name}</span>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+
                       {/* Text Color */}
                       <div className="space-y-4">
                         <div className="flex items-center justify-between">
@@ -515,7 +531,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                         </div>
 
                         {/* Single Colors Grid */}
-                        <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 gap-2 p-1 overflow-hidden">
+                        <div className="flex flex-wrap gap-2 p-1 overflow-hidden">
                           {SINGLE_TEXT_COLORS.map((color) => (
                             <TooltipProvider key={color.value}>
                               <Tooltip>
@@ -523,7 +539,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                                   <button
                                     onClick={() => handleTextColorChange(color.value, false)}
                                     aria-label={color.name}
-                                    className={`relative aspect-square rounded-lg overflow-hidden transition-all duration-200 border-2 ${textColor === color.value && !isMultiColor
+                                    className={`relative size-7 rounded-lg overflow-hidden transition-all duration-200 border-2 ${textColor === color.value && !isMultiColor
                                       ? "shadow-lg ring-2 ring-primary border-primary"
                                       : "border-border opacity-70 hover:opacity-100 shadow-sm"
                                       }`}
@@ -586,26 +602,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                         </div>
                       </div>
 
-                      {/* Font Selection */}
-                      <div className="space-y-2">
-                        <Label htmlFor="text-font" className="text-sm font-medium">Font Style</Label>
-                        <Select value={textFont} onValueChange={handleFontChange}>
-                          <SelectTrigger id="text-font" className="w-full h-11">
-                            <SelectValue>
-                              <span style={{ fontFamily: textFont }}>
-                                {FONTS.find((f) => f.value === textFont)?.name}
-                              </span>
-                            </SelectValue>
-                          </SelectTrigger>
-                          <SelectContent>
-                            {FONTS.map((f) => (
-                              <SelectItem key={f.value} value={f.value}>
-                                <span style={{ fontFamily: f.value }}>{f.name}</span>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                     
                     </AccordionContent>
                   </AccordionItem>
 
