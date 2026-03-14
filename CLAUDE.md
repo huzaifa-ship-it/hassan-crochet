@@ -42,10 +42,10 @@ bunx sanity@latest docs            # Open Sanity documentation
 - **Canvas Library**: Fabric.js 7.2.0 (imported as `import * as fabric from "fabric"`)
 - **Icons**: Lucide React and react-icons
 - **UI Components**: shadcn/ui (Radix UI primitives with Tailwind styling)
-- **Swiper**: Swiper 12.1.2 for carousels/sliders
+- **Swiper**: Swiper 12.1.2 for carousels/sliders (BannerSlider, TestimonialsCarousel, ReviewCard carousel)
 - **Utilities**: class-variance-authority, clsx, tailwind-merge for conditional styling
 - **Fonts**: Geist Sans and Geist Mono (via `next/font/google`), Plus Jakarta Sans, Lora, IBM Plex Mono (via shadcn)
-- **Animation**: framer-motion 12.34.3 for component animations
+- **Animation**: framer-motion 12.34.3 for component animations (TestimonialsCard, various UI transitions)
 
 ## Environment Variables
 
@@ -141,6 +141,27 @@ import { getProductBySlug } from "@/sanity/queries";
 All components using hooks or interactivity are marked with `'use client'` at the top. This includes:
 - All components in `src/components/`
 - `src/app/products/[slug]/client.tsx`
+
+### Providers Pattern
+
+The app uses a centralized `Providers` component (`src/components/providers.tsx`) that wraps the entire application:
+- `ToasterProvider`: Enables toast notifications throughout the app
+- `TooltipProvider`: Enables shadcn/ui tooltips
+
+The providers are rendered in the root layout (`src/app/layout.tsx`) and apply globally:
+```tsx
+import { Providers } from "@/components/providers"
+
+export default function RootLayout({ children }) {
+  return (
+    <html>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  )
+}
+```
 
 ### Server/Client Component Pattern for Dynamic Routes
 
@@ -265,16 +286,27 @@ const product = await getProductBySlug("tray-table");
 The project includes a custom toast notification system (`src/components/ui/toast.tsx`):
 - `ToasterProvider`: Wrap your app with this provider (already done in root layout via `Providers` component)
 - `useToaster()`: Hook to access toast functions in client components
-- `addToast(message, type)`: Display toast notifications (supports `success`, `error`, `info` types)
-- Toasts auto-dismiss after 3 seconds with smooth animations
+- `addToast({ message, variant, duration })`: Display toast notifications
+  - `variant`: `"default"`, `"success"`, or `"purchase"` (for purchase notifications with location/time)
+  - `duration`: Auto-dismiss duration in ms (default: 5000, set to 0 for persistent)
+- Toasts appear in bottom-right corner with smooth animations
 
 ```tsx
 import { useToaster } from "@/components/ui/toast";
 
 function MyComponent() {
   const { addToast } = useToaster();
-  addToast("Item added to cart", "success");
+  addToast({ message: "Item added to cart", variant: "success", duration: 3000 });
 }
+```
+
+**Purchase Notifications Pattern**: Use the "purchase" variant for social proof notifications showing customer purchases:
+```tsx
+addToast({
+  variant: "purchase",
+  message: `Someone from ${city}, ${country} purchased ${timeAgo}`,
+  duration: 6000,
+})
 ```
 
 ### Customization Canvas Features
@@ -336,6 +368,19 @@ The `CustomizationCanvas` component (`src/components/CustomizationCanvas.tsx`) p
 - Displays product image, title, badges, color variants
 - Links to product detail page
 
+**TestimonialsCard** (`src/components/ui/testimonials-card.tsx`):
+- Framer Motion-powered testimonial card carousel with 3D perspective effects
+- Features card stack animations with rotation, scale, and depth transitions
+- Supports auto-play, navigation arrows, and counter display
+- Used for displaying customer testimonials with images
+- Props: `items`, `className`, `width`, `showNavigation`, `showCounter`, `autoPlay`, `autoPlayInterval`
+
+**ReviewCard** (`src/app/products/[slug]/client.tsx`):
+- Compact customer review card component for Swiper carousels
+- Displays customer photo, rating (stars), review text, author info, and date
+- Features verified badge, hover effects, and responsive design
+- Used in product detail pages for social proof
+
 **Header** (`src/components/layout/Header.tsx`):
 - Sticky header with scroll shadow effect
 - Navigation menu from Sanity CMS
@@ -371,6 +416,51 @@ The `CustomizationCanvas` component (`src/components/CustomizationCanvas.tsx`) p
 - `tw-animate-css` for Tailwind-compatible animations
 - Custom scrollbar-hide utility class
 - Number input spin buttons hidden via CSS
+
+### Icon Library
+
+The project uses a custom icon library stored in `public/icons/`:
+- **Flower icons**: Blue, Brown, Green, Orange, Pink, Purple, White, Yellow variants (with and without "-half" suffix)
+- **Combo icons**: Pink Combo, White Combo, Yellow Combo
+- **Assorted decorative icons**: Various colors and styles (blue, pink, green, orange, red, purple, etc.)
+- **Swatches**: Color swatch images for product customization
+
+**Adding new icons**:
+1. Place icon files in `public/icons/` directory
+2. Add icon entry to `ICONS` array in `src/app/products/[slug]/client.tsx`:
+   ```tsx
+   { name: "Icon Name", url: "/icons/your-icon-file.png" }
+   ```
+3. Icons are displayed in a 6-column grid with drag-and-drop support
+4. White/near-white backgrounds are automatically removed when added to canvas
+5. Icons can be clicked or dragged onto the canvas to add them
+
+**Icon naming convention**: Use descriptive names that help users identify the icon at a glance. Icons with similar styles can be grouped together in the array.
+
+### Google Fonts for Text Customization
+
+The product customization canvas supports multiple Google Fonts:
+- **Pacifico**: Cursive handwriting font
+- **Delius**: Marker-style handwritten font
+- **Meow Script**: Casual script font
+- **Borel**: Rounded handwritten font
+- **Mystery Quest**: Decorative fantasy font
+- **Pinyon Script**: Elegant formal script font
+
+Fonts are configured in `src/app/products/[slug]/client.tsx` using `next/font/google`:
+```tsx
+const pacifico = Pacifico({ subsets: ["latin"], weight: "400", display: "swap" })
+```
+
+### Multi-Color Text Palettes
+
+The canvas supports four multi-color text palettes:
+- **Rainbow**: Pink, Yellow, Green, Blue, Purple
+- **Blossom**: Magenta, Light Pink, Pale Pink
+- **Cloudy**: Sky Blue, Powder Blue, Lavender, Gray
+- **Grassland**: Olive Green, Mint Green, Gray
+
+When a palette is selected, text is split character-by-character and colored in sequence, then grouped as a single Fabric.js object.
 
 ## TypeScript Configuration
 

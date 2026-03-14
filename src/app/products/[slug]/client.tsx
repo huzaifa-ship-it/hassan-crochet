@@ -68,6 +68,7 @@ const TIME_AGO_OPTIONS = [
 ]
 
 const ICONS = [
+  // Flower icons
   { name: "Blue Flower", url: "/icons/Blue Flower-half.png" },
   { name: "Brown Flower", url: "/icons/Brown Flower-half.png" },
   { name: "Green Flower", url: "/icons/Green Flower-half.png" },
@@ -80,6 +81,7 @@ const ICONS = [
   { name: "White Flower", url: "/icons/White Flower-half.png" },
   { name: "Yellow Combo", url: "/icons/Yellow Combo.png" },
   { name: "Yellow Flower", url: "/icons/Yellow Flower-half.png" },
+  // Color swatch icons
   { name: "Blue Icon 1", url: "/icons/image-swatches-2_1_1742280999062-1748241688.avif" },
   { name: "Pink Icon", url: "/icons/image-swatches-2_15_1742281294612-1748241738.avif" },
   { name: "Light Blue Icon", url: "/icons/image-swatches-2_2_1742281000795-1748241695.avif" },
@@ -93,6 +95,19 @@ const ICONS = [
   { name: "Dark Icon", url: "/icons/image-swatches-2_9_1742281002744-1748241718.webp" },
   { name: "Swatch 1", url: "/icons/swatch-17645549500664.webp" },
   { name: "Swatch 2", url: "/icons/swatch-17645549949216.avif" },
+  // New AI-generated decorative icons
+  { name: "Gemini Bloom 1", url: "/icons/Gemini_Generated_Image_15cep015cep015ce_transparent.png" },
+  { name: "Gemini Bloom 2", url: "/icons/Gemini_Generated_Image_3p152x3p152x3p15_transparent.png" },
+  { name: "Gemini Blossom", url: "/icons/Gemini_Generated_Image_4br2gd4br2gd4br2_transparent.png" },
+  { name: "Gemini Garden", url: "/icons/Gemini_Generated_Image_6bygz36bygz36byg_transparent.png" },
+  { name: "Gemini Petal", url: "/icons/Gemini_Generated_Image_6wg1136wg1136wg1_transparent.png" },
+  { name: "Gemini Floral", url: "/icons/Gemini_Generated_Image_jhpxefjhpxefjhpx_transparent.png" },
+  { name: "Gemini Spark", url: "/icons/Gemini_Generated_Image_r6x9njr6x9njr6x9_transparent.png" },
+  { name: "Gemini Star", url: "/icons/Gemini_Generated_Image_riaal5riaal5riaa_transparent.png" },
+  { name: "Gemini Twirl", url: "/icons/Gemini_Generated_Image_tty5hytty5hytty5_transparent.png" },
+  { name: "Gemini Rose", url: "/icons/Gemini_Generated_Image_whgm4rwhgm4rwhgm_transparent.png" },
+  { name: "Gemini Vine", url: "/icons/Gemini_Generated_Image_wlzslpwlzslpwlzs_transparent.png" },
+  { name: "Gemini Heart", url: "/icons/Screenshot 2026-03-14 025500_transparent.png" },
 ]
 
 // Single color options
