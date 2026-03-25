@@ -18,6 +18,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 
 // Swiper imports
 import { Swiper, SwiperSlide } from "swiper/react"
@@ -432,6 +433,9 @@ export default function ProductClient({ product }: ProductClientProps) {
 
   // UI state
   const [showFullDescription, setShowFullDescription] = useState(false)
+  const [isOrderDialogOpen, setIsOrderDialogOpen] = useState(false)
+  const [orderForm, setOrderForm] = useState({ name: '', email: '', phone: '', address: '' })
+  const [isSubmittingOrder, setIsSubmittingOrder] = useState(false)
 
   // Update canvas base image when color changes
   useEffect(() => {
@@ -492,6 +496,36 @@ export default function ProductClient({ product }: ProductClientProps) {
     navigator.clipboard.writeText(currentSummary)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleOrderSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubmittingOrder(true)
+    try {
+      const response = await fetch('/api/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...orderForm,
+          productName: product.title,
+          productLink: product.etsyLink || "https://www.etsy.com",
+          customizationDetails: currentSummary,
+        }),
+      })
+
+      if (response.ok) {
+        window.open(product.etsyLink || "https://www.etsy.com", "_blank", "noopener,noreferrer")
+        setIsOrderDialogOpen(false)
+        setOrderForm({ name: '', email: '', phone: '', address: '' })
+      } else {
+        const errorData = await response.json()
+        addToast({ variant: 'default', message: 'Failed to submit order: ' + (errorData.message || 'Unknown error'), duration: 5000 })
+      }
+    } catch {
+      addToast({ variant: 'default', message: 'Failed to submit order. Please check your connection.', duration: 5000 })
+    } finally {
+      setIsSubmittingOrder(false)
+    }
   }
 
   const badges = getBadgeLabels(product.badges)
@@ -887,7 +921,7 @@ export default function ProductClient({ product }: ProductClientProps) {
                     <span>Important Note:</span>
                   </p>
                   <p className="text-sm text-amber-800 dark:text-amber-200 mt-2 leading-relaxed">
-                    Please copy the text below to Etsy's personalization box, or take a screenshot and send it to the seller!
+                    Please copy the text below to Etsy&apos;s personalization box, or take a screenshot and send it to the seller!
                   </p>
                 </div>
               </CardContent>
@@ -909,18 +943,14 @@ export default function ProductClient({ product }: ProductClientProps) {
                     <span>Premium handmade craftsmanship</span>
                   </div>
                 </div>
-                <a
-                  href={product.etsyLink || "https://www.etsy.com"}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block"
+                <Button 
+                  onClick={() => setIsOrderDialogOpen(true)}
+                  className="w-full bg-white text-primary hover:bg-white/90 h-10 sm:h-12 font-semibold shadow-xl text-sm sm:text-base"
                 >
-                  <Button className="w-full bg-white text-primary hover:bg-white/90 h-10 sm:h-12 font-semibold shadow-xl text-sm sm:text-base">
-                    <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
-                    Order on Etsy
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5 sm:ml-2" />
-                  </Button>
-                </a>
+                  <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 sm:mr-2" />
+                  Order on Etsy
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 ml-1.5 sm:ml-2" />
+                </Button>
                 <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-1 sm:pt-2">
                   <div className="text-center">
                     <div className="w-7 h-7 sm:w-9 sm:h-9 mx-auto mb-1 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
@@ -1031,6 +1061,70 @@ export default function ProductClient({ product }: ProductClientProps) {
             </button>
           </div>
         </div>
+
+        {/* Order Dialog */}
+        <Dialog open={isOrderDialogOpen} onOpenChange={setIsOrderDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Complete Your Customization</DialogTitle>
+              <DialogDescription>
+                Please provide your details before we redirect you to Etsy to complete the purchase. This helps us match your customization to your order.
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleOrderSubmit} className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input 
+                  id="name" 
+                  value={orderForm.name} 
+                  onChange={(e) => setOrderForm(prev => ({ ...prev, name: e.target.value }))} 
+                  placeholder="John Doe" 
+                  required 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input 
+                  id="email" 
+                  type="email" 
+                  value={orderForm.email} 
+                  onChange={(e) => setOrderForm(prev => ({ ...prev, email: e.target.value }))} 
+                  placeholder="john@example.com" 
+                  required 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone Number</Label>
+                <Input 
+                  id="phone" 
+                  type="tel" 
+                  value={orderForm.phone} 
+                  onChange={(e) => setOrderForm(prev => ({ ...prev, phone: e.target.value }))} 
+                  placeholder="+1 (555) 000-0000" 
+                  required 
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="address">Shipping Address</Label>
+                <Input 
+                  id="address" 
+                  value={orderForm.address} 
+                  onChange={(e) => setOrderForm(prev => ({ ...prev, address: e.target.value }))} 
+                  placeholder="123 Main St, City, Country" 
+                  required 
+                />
+              </div>
+              <DialogFooter className="pt-4">
+                <Button type="button" variant="outline" onClick={() => setIsOrderDialogOpen(false)} disabled={isSubmittingOrder}>
+                  Cancel
+                </Button>
+                <Button type="submit" disabled={isSubmittingOrder}>
+                  {isSubmittingOrder ? "Processing..." : "Continue to Etsy"}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   )
