@@ -74,7 +74,7 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
             requestAnimationFrame(() => setIsCanvasReady(true));
 
             // Automatically style any object added to the canvas
-            canvas.on('object:added', (e: any) => {
+            canvas.on('object:added', (e: { target: fabric.Object }) => {
                 if (e.target) {
                     // Force professional blue border colors on every object
                     e.target.set({
@@ -292,7 +292,7 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
                             }
 
                             ctx.putImageData(imageData, 0, 0);
-                            img.setElement(canvas as any);
+                            img.setElement(canvas as HTMLCanvasElement);
                         }
                     }
 
@@ -447,7 +447,7 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
                             }
 
                             ctx.putImageData(imageData, 0, 0);
-                            img.setElement(canvas as any);
+                            img.setElement(canvas as HTMLCanvasElement);
                         }
                     }
 
@@ -603,12 +603,13 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
                     if (paletteColors) {
                         // Update the multicolor group
                         const objects = group.getObjects();
-                        objects.forEach((obj: any, index) => {
+                        objects.forEach((obj, index) => {
                             if (obj.type === 'text') {
+                                const textObj = obj as fabric.Text;
                                 const colorIndex = index % paletteColors.length;
-                                obj.set('fill', paletteColors[colorIndex]);
+                                textObj.set('fill', paletteColors[colorIndex]);
                                 if (font) {
-                                    obj.set('fontFamily', font);
+                                    textObj.set('fontFamily', font);
                                 }
                             }
                         });
@@ -616,14 +617,14 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
                         // Convert back to single color textbox
                         const objects = group.getObjects();
                         let text = "";
-                        objects.forEach((obj: any) => {
+                        objects.forEach((obj) => {
                             if (obj.type === 'text') {
-                                text += obj.text;
+                                text += (obj as fabric.Text).text;
                             }
                         });
 
                         // Create new textbox
-                        const firstObj = objects[0] as any;
+                        const firstObj = objects[0] as fabric.Text;
                         const textObj = new fabric.Textbox(text, {
                             left: group.left,
                             top: group.top,
