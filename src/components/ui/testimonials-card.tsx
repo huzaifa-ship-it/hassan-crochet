@@ -23,8 +23,6 @@ interface TestimonialsCardProps {
     items: TestimonialItem[];
     /** Additional CSS classes for the container */
     className?: string;
-    /** Width of the card stack (default: 400) */
-    width?: number;
     /** Whether to show navigation arrows (default: true) */
     showNavigation?: boolean;
     /** Whether to show the counter (default: true) */
@@ -38,7 +36,6 @@ interface TestimonialsCardProps {
 export function TestimonialsCard({
     items,
     className,
-    width = 400,
     showNavigation = true,
     showCounter = true,
     autoPlay = false,
@@ -89,8 +86,8 @@ export function TestimonialsCard({
                 style={{ perspective: "1400px" }}
             >
                 {/* Image Card Stack */}
-                <div className="relative w-full md:w-auto flex-shrink-0">
-                    <div className="w-[300px] h-[300px] relative">
+                <div className="relative w-full md:w-auto shrink-0">
+                    <div className="w-75 h-75 relative">
                         <AnimatePresence custom={direction}>
                             {items.map((item, index) => {
                                 const isActive = index === activeIndex;
@@ -175,7 +172,7 @@ export function TestimonialsCard({
                         >
                             {activeItem.headline && (
                                 <p className="text-lg md:text-xl font-semibold text-primary italic leading-snug">
-                                    "{activeItem.headline}"
+                                    &quot;{activeItem.headline}&quot;
                                 </p>
                             )}
                             <h3 className="text-xl md:text-2xl font-bold text-neutral-900 dark:text-white">

@@ -39,12 +39,6 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
             const width = container.clientWidth;
             const height = container.clientHeight;
 
-            // Custom control colors - professional dark blue for visibility
-            const selectionColor = "#1d4ed8"; // Nice dark blue (blue-700)
-            const cornerStrokeColor = "#1e40af"; // Slightly lighter dark blue (blue-800)
-            const cornerColor = "#ffffff"; // White fill for corners
-            const borderColor = "#1d4ed8"; // Professional dark blue border
-
             const canvas = new fabric.Canvas(canvasRef.current, {
                 width,
                 height,
@@ -197,7 +191,7 @@ const CustomizationCanvas = forwardRef<CustomizationCanvasRef, CustomizationCanv
             let lastHeight = fabricCanvas.height || 0;
 
             const resizeObserver = new ResizeObserver((entries) => {
-                for (let entry of entries) {
+                for (const entry of entries) {
                     const { width, height } = entry.contentRect;
                     if (width === 0 || height === 0) continue;
 

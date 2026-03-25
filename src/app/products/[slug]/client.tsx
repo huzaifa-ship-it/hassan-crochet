@@ -1,7 +1,31 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from "react"
-import { Download, Copy, Heart, Info, Palette, Type, Sparkles, ArrowRight, Shield, Truck, Gem, Star, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Check, ShoppingBag, ZoomIn, Award, Clock, Quote, Trash2 } from "lucide-react"
+import {
+  Download,
+  Copy,
+  Heart,
+  Info,
+  Palette,
+  Type,
+  Sparkles,
+  ArrowRight,
+  Shield,
+  Truck,
+  Gem,
+  Star,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  ShoppingBag,
+  Award,
+  Clock,
+  Quote,
+  Trash2,
+  ZoomIn
+} from "lucide-react"
 import { Pacifico, Sniglet } from "next/font/google"
 
 import CustomizationCanvas, { CustomizationCanvasRef } from "@/components/CustomizationCanvas"
@@ -26,6 +50,7 @@ import { Autoplay, Pagination, Navigation } from "swiper/modules"
 import "swiper/css"
 import "swiper/css/pagination"
 import "swiper/css/navigation"
+import Link from "next/link"
 
 // Configure Google Fonts
 const pacifico = Pacifico({ subsets: ["latin"], weight: "400", display: "swap" })
@@ -530,9 +555,9 @@ export default function ProductClient({ product }: ProductClientProps) {
       <div className="mx-auto px-3 sm:px-4 py-6 sm:py-8 md:py-12 max-w-7xl w-full">
         {/* Breadcrumb */}
         <nav className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-muted-foreground mb-6 sm:mb-8">
-          <a href="/" className="hover:text-foreground transition-colors shrink-0">Home</a>
+          <Link href="/" className="hover:text-foreground transition-colors shrink-0">Home</Link>
           <span className="shrink-0">/</span>
-          <a href="/products" className="hover:text-foreground transition-colors shrink-0">Products</a>
+          <Link href="/products" className="hover:text-foreground transition-colors shrink-0">Products</Link>
           <span className="shrink-0">/</span>
           <span className="text-foreground font-medium truncate">{product.title}</span>
         </nav>

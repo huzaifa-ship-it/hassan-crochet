@@ -9,7 +9,12 @@ export interface ProductVariant {
   colorValue?: string;
   imageUrl?: string | null;
   sortOrder: number;
-  image?: any;
+  image?: {
+    asset?: {
+      _ref: string;
+      _type: string;
+    };
+  };
 }
 
 export interface Product {
