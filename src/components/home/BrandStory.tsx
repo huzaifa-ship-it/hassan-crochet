@@ -67,7 +67,7 @@ export function BrandStory({ className }: BrandStoryProps) {
                 Handcrafted with Love Since 2020
               </h2>
               <p className="text-muted-foreground text-base md:text-lg leading-relaxed">
-                Since 2020, Hassan Crochet has been creating unique, customizable crochet pieces that
+                Since 2020, Knitty Petit has been creating unique, customizable crochet pieces that
                 bring warmth and personality to your home. Each product is lovingly handcrafted with
                 attention to detail and quality materials.
               </p>
