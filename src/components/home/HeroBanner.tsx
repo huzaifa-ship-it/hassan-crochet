@@ -29,6 +29,7 @@ const HeroBanner = () => {
                 className="mySwiper"
             >
                 <SwiperSlide><img src="/Banner1.png" className="w-full h-full object-cover" alt="Hello" /></SwiperSlide>
+                <SwiperSlide><img src="/banner2.png" className="w-full h-full object-cover" alt="" /></SwiperSlide>
                 <SwiperSlide><img src="/banner2.jpg" className="w-full h-full object-cover" alt="" /></SwiperSlide>
 
             </Swiper>
