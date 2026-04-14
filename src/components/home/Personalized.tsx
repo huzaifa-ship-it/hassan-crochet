@@ -6,7 +6,7 @@ const Personalized = () => {
       <div className="container mx-auto w-full overflow-hidden h-full flex flex-col md:flex-row items-center justify-center gap-10 md:gap-5">
         <div className="image w-full md:w-1/2 flex items-center justify-center">
           <img
-            src="/home1.webp"
+            src="/products/img.png"
             className="overflow-hidden w-[90%] sm:w-[75%] h-auto rounded-t-full bg-cover"
             alt=""
           />

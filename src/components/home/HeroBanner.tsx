@@ -28,9 +28,8 @@ const HeroBanner = () => {
                 modules={[Autoplay, Pagination, Navigation]}
                 className="mySwiper"
             >
-                <SwiperSlide><img src="/banner2.png" className="w-full h-full object-cover" alt="" /></SwiperSlide>
+                <SwiperSlide><img src="/banner2.png" className="w-full h-full object-cover object-[50%_-200px]  " alt="" /></SwiperSlide>
                 <SwiperSlide><img src="/banner1.png" className="w-full h-full object-cover" alt="" /></SwiperSlide>
-                <SwiperSlide><img src="/banner2.jpg" className="w-full h-full object-cover" alt="" /></SwiperSlide>
 
             </Swiper>
         </div>
