@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { SearchDropdown } from "@/components/search/SearchDropdown";
 import { X } from "lucide-react";
+import TimerClock from "../TimerClock";
 
 export default function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -14,12 +15,12 @@ export default function Header() {
       {/* 1. HEADER CONTAINER: Must be relative with a high z-index so the wave overlaps the content below */}
       <header className="relative bg-white z-50">
         {/* Announcement Bar */}
-        <div className="bg-[#e49b5c] text-white text-sm text-center py-2.5 font-medium flex items-center justify-center gap-2">
-          <span>📦</span> Subscribe to get 10% off your first order!
+        <div className="fixed top-0 left-0 right-0 bg-orange-300 text-white text-sm text-center py-2.5 font-medium flex items-center justify-center gap-2">
+          <span className="text-lg">📦 Hurry! Up to 40% Off Ends Soon</span> <TimerClock />
         </div>
 
         {/* Main Navbar */}
-        <nav className="max-w-[1600px]  mx-auto px-4 sm:px-8 py-5 flex items-start justify-between">
+        <nav className="max-w-[1600px]  mt-10 mx-auto px-4 sm:px-8 py-5 flex items-start justify-between">
           {/* LEFT: Nav Links (Wraps into two lines automatically if needed) */}
           <div className="hidden lg:flex flex-col gap-3 w-1/3 mt-2">
             <ul className="flex flex-wrap items-center gap-x-5 gap-y-2 text-lg  text-gray-800">

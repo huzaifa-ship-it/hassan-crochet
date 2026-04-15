@@ -65,7 +65,7 @@ export function ProductCard({ product, className, showQuickView = false, onQuick
         )}
 
         {/* Image Container */}
-        <Link href={`/products/${product.slug.current}`} className="block relative aspect-square overflow-hidden bg-muted/30">
+        <div className="block relative aspect-square overflow-hidden bg-muted/30">
           {/* Primary Image */}
           {mainImage && (
             <Image
@@ -85,20 +85,8 @@ export function ProductCard({ product, className, showQuickView = false, onQuick
 
           {/* Quick Action Buttons on Hover */}
           <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex gap-2">
-            {showQuickView && (
-              <Button
-                variant="secondary"
-                size="sm"
-                className="flex-1 bg-background/90 backdrop-blur-sm hover:bg-background"
-                onClick={(e) => {
-                  e.preventDefault()
-                  onQuickView?.(product)
-                }}
-              >
-                <Eye className="w-4 h-4 mr-1.5" />
-                Quick View
-              </Button>
-            )}
+
+
             <Button
               asChild
               size="sm"
@@ -110,10 +98,8 @@ export function ProductCard({ product, className, showQuickView = false, onQuick
               <a
                 href={product.etsyLink || "#"}
                 target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.preventDefault()}
               >
-                View on Etsy
+                View On Etsy
                 <ArrowRight className="w-4 h-4 ml-1.5 group-hover:translate-x-0.5 transition-transform" />
               </a>
             </Button>
@@ -125,7 +111,7 @@ export function ProductCard({ product, className, showQuickView = false, onQuick
               <Sparkles className="w-16 h-16 text-primary/20 animate-pulse" />
             </div>
           </div>
-        </Link>
+        </div>
 
         {/* Content */}
         <CardContent className="p-4 space-y-3">
@@ -182,21 +168,20 @@ export function ProductCard({ product, className, showQuickView = false, onQuick
           )}
 
           {/* Premium CTA Button */}
-          <a
-            href={product.etsyLink || "#"}
-            target="_blank"
+          <Link
+            href={`/products/${product.slug.current}`}
             rel="noopener noreferrer"
             className="group/btn relative block"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-orange-600 to-orange-500 rounded-lg blur opacity-0 group-hover/btn:opacity-20 transition-opacity duration-300"></div>
             <button className="relative w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-medium py-2.5 px-4 rounded-lg shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/30 transition-all duration-300 flex items-center justify-center gap-2 text-sm group-hover/btn:scale-[1.02] active:scale-[0.98]">
-              <span>Order on Etsy</span>
+              <span>Customize Now</span>
               <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
             </button>
-          </a>
+          </Link>
         </CardContent>
       </Card>
-    </div>
+    </div >
   )
 }
 
