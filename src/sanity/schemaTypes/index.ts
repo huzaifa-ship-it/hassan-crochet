@@ -5,6 +5,8 @@ import banner from './banner'
 import testimonial from './testimonial'
 import newsletter from './newsletter'
 import order from './order'
+import post from './post'
+import author from './author'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -14,5 +16,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     testimonial,
     newsletter,
     order,
+    // Blog types
+    post,
+    author,
   ],
 }

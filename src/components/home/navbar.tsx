@@ -16,7 +16,8 @@ export default function Header() {
       <header className="relative bg-white z-50">
         {/* Announcement Bar */}
         <div className="fixed top-0 left-0 right-0 bg-orange-300 text-white text-sm text-center py-2.5 font-medium flex items-center justify-center gap-2">
-          <span className="text-lg">📦 Hurry! Up to 40% Off Ends Soon</span> <TimerClock />
+          <span className="text-sm">📦 Hurry! Up to 40% Off Ends Soon</span>{" "}
+          <TimerClock />
         </div>
 
         {/* Main Navbar */}
@@ -30,6 +31,22 @@ export default function Header() {
                   className="hover:text-gray-500 transition-colors"
                 >
                   Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/blog"
+                  className="hover:text-gray-500 transition-colors"
+                >
+                  Journal
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  className="hover:text-gray-500 transition-colors"
+                >
+                  About
                 </Link>
               </li>
 
@@ -67,8 +84,6 @@ export default function Header() {
                   ></path>
                 </svg> */}
               </li>
-
-
             </ul>
           </div>
 
@@ -81,7 +96,7 @@ export default function Header() {
                 src={"/logo.png"}
                 width={500}
                 height={500}
-                className="size-20"
+                className="size-12"
               />
               <div className="text-center tracking-[0.25em] leading-[1.1] text-gray-500 font-light">
                 <div className="text-lg">KNITTY</div>
@@ -183,7 +198,6 @@ export default function Header() {
           </svg>
         </div>
       </header>
-
     </>
   );
 }

@@ -599,3 +599,107 @@ export async function searchProducts(searchTerm: string, limit = 12): Promise<Pr
   const results = await fetchSanityArray<Product>(searchQuery, { searchTerm: `*${searchTerm}*` });
   return results.map(applyVariantOverrides);
 }
+
+// ============================================================================
+// BLOG TYPES & QUERIES
+// ============================================================================
+
+/**
+ * Author shape resolved inside post queries.
+ * Kept separate from the full Author document for query efficiency.
+ */
+export interface PostAuthor {
+  name: string;
+  slug: { current: string };
+  image?: {
+    asset: { _ref: string; _type: string };
+    alt?: string;
+  };
+  bio?: string;
+}
+
+/**
+ * Category value strings stored in the post's `categories` array.
+ * E.g. "crochet-tips" | "tutorials" | "inspiration" …
+ */
+export type BlogCategory = string;
+
+/**
+ * Minimal shape used in the blog listing grid (BlogCard component).
+ * Only fetches what's needed for the card — no body content.
+ */
+export interface PostPreview {
+  _id: string;
+  title: string;
+  slug: { current: string };
+  mainImage?: {
+    asset: { _ref: string; _type: string };
+    alt?: string;
+  };
+  excerpt?: string;
+  publishedAt?: string;
+  author?: PostAuthor;
+  categories?: BlogCategory[];
+}
+
+/**
+ * Full post shape including portable-text body.
+ * Used only on the detail page to avoid over-fetching on the listing.
+ */
+export interface Post extends PostPreview {
+  // `body` is the raw Portable Text array consumed by @portabletext/react
+  // We use `unknown[]` here because the PT block shape is complex and
+  // already typed by the library itself at render time.
+  body?: unknown[];
+}
+
+// -----------------------------------------------------------------------
+// getAllPosts — returns PostPreview[] for the blog listing page
+// -----------------------------------------------------------------------
+export async function getAllPosts(): Promise<PostPreview[]> {
+  const query = `*[_type == "post" && !(_id in path("drafts.**"))] | order(publishedAt desc) {
+    _id,
+    title,
+    slug,
+    mainImage { asset, alt },
+    excerpt,
+    publishedAt,
+    author->{ name, slug, image { asset, alt } },
+    categories
+  }`;
+
+  // ISR: revalidate every 60 s — matches the page-level `export const revalidate = 60`
+  return fetchSanityArray<PostPreview>(query, undefined, { revalidate: 60 });
+}
+
+// -----------------------------------------------------------------------
+// getPostBySlug — returns full Post for the detail page
+// -----------------------------------------------------------------------
+export async function getPostBySlug(slug: string): Promise<Post | null> {
+  const query = `*[_type == "post" && slug.current == $slug && !(_id in path("drafts.**"))][0] {
+    _id,
+    title,
+    slug,
+    mainImage { asset, alt },
+    excerpt,
+    publishedAt,
+    author->{ name, slug, image { asset, alt }, bio },
+    categories,
+    body
+  }`;
+
+  // ISR: revalidate every 60 s — matches the page-level `export const revalidate = 60`
+  return fetchSanity<Post>(query, { slug }, { revalidate: 60 });
+}
+
+// -----------------------------------------------------------------------
+// getAllPostSlugs — minimal query used by generateStaticParams
+// -----------------------------------------------------------------------
+export async function getAllPostSlugs(): Promise<Array<{ slug: { current: string } }>> {
+  const query = `*[_type == "post" && defined(slug.current) && !(_id in path("drafts.**"))] {
+    slug { current }
+  }`;
+
+  // No ISR needed for static params — build time only, cache doesn't matter
+  return fetchSanityArray<{ slug: { current: string } }>(query);
+}
