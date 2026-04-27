@@ -6,26 +6,26 @@ import { useEffect, useState } from "react";
 import * as pixel from "@/lib/fpixel";
 
 const FacebookPixel = () => {
-    const [loaded, setLoaded] = useState(false);
-    const pathname = usePathname();
+  const [loaded, setLoaded] = useState(false);
+  const pathname = usePathname();
 
-    useEffect(() => {
-        if (!loaded) return;
+  useEffect(() => {
+    if (!loaded) return;
 
-        pixel.pageview();
-    }, [pathname, loaded]);
+    pixel.pageview();
+  }, [pathname, loaded]);
 
-    return (
-        <div>
-            <Script
-                id="fb-pixel"
-                src="/scripts/pixel.ts"
-                strategy="afterInteractive"
-                onLoad={() => setLoaded(true)}
-                data-pixel-id={pixel.FB_PIXEL_ID}
-            />
-        </div>
-    );
+  return (
+    <div>
+      <Script
+        id="fb-pixel"
+        src="/scripts/pixel.ts"
+        strategy="afterInteractive"
+        onLoad={() => setLoaded(true)}
+        data-pixel-id={pixel.FB_PIXEL_ID}
+      />
+    </div>
+  );
 };
 
 export default FacebookPixel;

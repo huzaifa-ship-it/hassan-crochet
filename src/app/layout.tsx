@@ -3,8 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { SiteFooter } from "@/components/site-footer";
 
-import "./globals.css"
-import { FacebookPixel } from "@/components";
+import "./globals.css";
+import FacebookPixel from "@/components/FacebookPixel";
 import Header from "@/components/home/navbar";
 
 const geistSans = Geist({
@@ -19,7 +19,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Knitty Petit - Handmade Crochet Products",
-  description: "Beautiful handmade crochet products with customization options. Shop unique trays, decor, and accessories.",
+  description:
+    "Beautiful handmade crochet products with customization options. Shop unique trays, decor, and accessories.",
 };
 
 export default function RootLayout({
